@@ -1,7 +1,10 @@
 services:
   db:
     build: docker/db
-    env_file: app/.env
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=devdb
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:

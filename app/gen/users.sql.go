@@ -11,7 +11,7 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users(name, email, phone_number, password) VALUES (?, ?, ?, ?)
+INSERT INTO users(name, email, phone_number, password) VALUES ($1, $2, $3, $4)
 RETURNING id, name, email, phone_number, created_at, updated_at
 `
 
@@ -23,7 +23,7 @@ type CreateUserParams struct {
 }
 
 type CreateUserRow struct {
-	ID          int64
+	ID          int32
 	Name        string
 	Email       string
 	PhoneNumber sql.NullString
@@ -51,10 +51,10 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users WHERE id = ?
+DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteUser, id)
 	return err
 }
@@ -62,11 +62,11 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 const getUser = `-- name: GetUser :one
 SELECT id, name, email, phone_number, created_at, updated_at
 FROM users
-WHERE id = ?
+WHERE id = $1
 `
 
 type GetUserRow struct {
-	ID          int64
+	ID          int32
 	Name        string
 	Email       string
 	PhoneNumber sql.NullString
@@ -74,7 +74,7 @@ type GetUserRow struct {
 	UpdatedAt   sql.NullTime
 }
 
-func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
+func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
 	var i GetUserRow
 	err := row.Scan(
@@ -90,11 +90,11 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET name = coalesce(?1, name),
-    email = coalesce(?2, email),
-    phone_number = coalesce(?3, phone_number),
+SET name = coalesce($1, name),
+    email = coalesce($2, email),
+    phone_number = coalesce($3, phone_number),
     updated_at = CURRENT_TIMESTAMP
-WHERE id = ?4
+WHERE id = $4
 RETURNING id, name, email, phone_number, created_at, updated_at
 `
 
@@ -102,11 +102,11 @@ type UpdateUserParams struct {
 	Name        sql.NullString
 	Email       sql.NullString
 	PhoneNumber sql.NullString
-	ID          int64
+	ID          int32
 }
 
 type UpdateUserRow struct {
-	ID          int64
+	ID          int32
 	Name        string
 	Email       string
 	PhoneNumber sql.NullString

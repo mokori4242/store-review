@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
@@ -12,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,7 +32,7 @@ type createRequest struct {
 }
 
 type response struct {
-	ID          int64  `json:"id"`
+	ID          int32  `json:"id"`
 	Name        string `json:"name"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
@@ -41,8 +43,7 @@ type response struct {
 var q *db.Queries
 
 func main() {
-	// SQLite 接続
-	conn, err := sql.Open("sqlite3", "./sqlite.db")
+	conn, err := sql.Open("postgres", generateDsn())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,6 +59,23 @@ func main() {
 	r.PUT("/users/:id", updateUser)
 	r.DELETE("/users/:id", deleteUser)
 	r.Run()
+}
+
+func generateDsn() string {
+	// 環境変数から取得
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("POSTGRES_PORT")
+	dbname := os.Getenv("DB_NAME")
+	sslmode := os.Getenv("DB_SSLMODE")
+
+	// DSN組み立て
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		user, pass, host, port, dbname, sslmode,
+	)
+
+	return dsn
 }
 
 func setupValidator() {
@@ -120,7 +138,7 @@ func getUser(c *gin.Context) {
 		return
 	}
 
-	user, err := q.GetUser(c.Request.Context(), id)
+	user, err := q.GetUser(c.Request.Context(), int32(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -152,7 +170,7 @@ func updateUser(c *gin.Context) {
 	}
 
 	params := db.UpdateUserParams{
-		ID: id,
+		ID: int32(id),
 	}
 	if req.Name != "" {
 		params.Name = sql.NullString{String: req.Name, Valid: true}
@@ -189,7 +207,7 @@ func deleteUser(c *gin.Context) {
 		return
 	}
 
-	err = q.DeleteUser(c.Request.Context(), id)
+	err = q.DeleteUser(c.Request.Context(), int32(id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

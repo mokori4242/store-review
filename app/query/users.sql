@@ -1,11 +1,11 @@
 -- name: CreateUser :one
-INSERT INTO users(name, email, phone_number, password) VALUES (?, ?, ?, ?)
+INSERT INTO users(name, email, phone_number, password) VALUES ($1, $2, $3, $4)
 RETURNING id, name, email, phone_number, created_at, updated_at;
 
 -- name: GetUser :one
 SELECT id, name, email, phone_number, created_at, updated_at
 FROM users
-WHERE id = ?;
+WHERE id = $1;
 
 -- name: UpdateUser :one
 UPDATE users
@@ -17,4 +17,4 @@ WHERE id = sqlc.arg(id)
 RETURNING id, name, email, phone_number, created_at, updated_at;
 
 -- name: DeleteUser :exec
-DELETE FROM users WHERE id = ?;
+DELETE FROM users WHERE id = $1;

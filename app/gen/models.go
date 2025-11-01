@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID          int64
+	ID          int32
 	Name        string
 	Email       string
 	PhoneNumber sql.NullString
@@ -19,8 +19,8 @@ type User struct {
 }
 
 type UserCar struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime
