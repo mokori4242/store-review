@@ -1,0 +1,14 @@
+[tasks.into-app]
+description = "into app container"
+run = "docker compose exec app sh"
+
+[tasks.up]
+description = "up container"
+run = "docker compose up -d"
+
+[tasks.down]
+description = "down container"
+run = "docker compose down"
+
+[env]
+NODE_ENV = "pro"

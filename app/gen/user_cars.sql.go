@@ -11,19 +11,19 @@ import (
 )
 
 const createUserCar = `-- name: CreateUserCar :one
-INSERT INTO user_cars (user_id, registration_number, model) VALUES (?, ?, ?)
+INSERT INTO user_cars (user_id, registration_number, model) VALUES ($1, $2, $3)
 RETURNING id, user_id, registration_number, model, created_at
 `
 
 type CreateUserCarParams struct {
-	UserID             int64
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 }
 
 type CreateUserCarRow struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime
@@ -43,10 +43,10 @@ func (q *Queries) CreateUserCar(ctx context.Context, arg CreateUserCarParams) (C
 }
 
 const deleteUserCar = `-- name: DeleteUserCar :exec
-DELETE FROM user_cars WHERE id = ?
+DELETE FROM user_cars WHERE id = $1
 `
 
-func (q *Queries) DeleteUserCar(ctx context.Context, id int64) error {
+func (q *Queries) DeleteUserCar(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteUserCar, id)
 	return err
 }
@@ -54,18 +54,18 @@ func (q *Queries) DeleteUserCar(ctx context.Context, id int64) error {
 const getUserCar = `-- name: GetUserCar :one
 SELECT id, user_id, registration_number, model, created_at
 FROM user_cars
-WHERE id = ?
+WHERE id = $1
 `
 
 type GetUserCarRow struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime
 }
 
-func (q *Queries) GetUserCar(ctx context.Context, id int64) (GetUserCarRow, error) {
+func (q *Queries) GetUserCar(ctx context.Context, id int32) (GetUserCarRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserCar, id)
 	var i GetUserCarRow
 	err := row.Scan(
@@ -81,7 +81,7 @@ func (q *Queries) GetUserCar(ctx context.Context, id int64) (GetUserCarRow, erro
 const getUserCarByRegistrationNumberAndModel = `-- name: GetUserCarByRegistrationNumberAndModel :one
 SELECT id, user_id, registration_number, model, created_at
 FROM user_cars
-WHERE registration_number = ? AND model = ?
+WHERE registration_number = $1 AND model = $2
 `
 
 type GetUserCarByRegistrationNumberAndModelParams struct {
@@ -90,8 +90,8 @@ type GetUserCarByRegistrationNumberAndModelParams struct {
 }
 
 type GetUserCarByRegistrationNumberAndModelRow struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime
@@ -113,18 +113,18 @@ func (q *Queries) GetUserCarByRegistrationNumberAndModel(ctx context.Context, ar
 const getUserCarsByUserId = `-- name: GetUserCarsByUserId :many
 SELECT id, user_id, registration_number, model, created_at
 FROM user_cars
-WHERE user_id = ?
+WHERE user_id = $1
 `
 
 type GetUserCarsByUserIdRow struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime
 }
 
-func (q *Queries) GetUserCarsByUserId(ctx context.Context, userID int64) ([]GetUserCarsByUserIdRow, error) {
+func (q *Queries) GetUserCarsByUserId(ctx context.Context, userID int32) ([]GetUserCarsByUserIdRow, error) {
 	rows, err := q.db.QueryContext(ctx, getUserCarsByUserId, userID)
 	if err != nil {
 		return nil, err
@@ -154,20 +154,20 @@ func (q *Queries) GetUserCarsByUserId(ctx context.Context, userID int64) ([]GetU
 }
 
 const updateUserCar = `-- name: UpdateUserCar :one
-UPDATE user_cars SET user_id = ?, registration_number = ?, model = ?
-WHERE id = ? RETURNING id, user_id, registration_number, model, created_at
+UPDATE user_cars SET user_id = $1, registration_number = $2, model = $3
+WHERE id = $4 RETURNING id, user_id, registration_number, model, created_at
 `
 
 type UpdateUserCarParams struct {
-	UserID             int64
+	UserID             int32
 	RegistrationNumber string
 	Model              string
-	ID                 int64
+	ID                 int32
 }
 
 type UpdateUserCarRow struct {
-	ID                 int64
-	UserID             int64
+	ID                 int32
+	UserID             int32
 	RegistrationNumber string
 	Model              string
 	CreatedAt          sql.NullTime

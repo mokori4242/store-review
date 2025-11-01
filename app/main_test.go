@@ -14,7 +14,7 @@ import (
 	db "go-gin/gen"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -22,9 +22,14 @@ var testDB *sql.DB
 var testQueries *db.Queries
 
 func TestMain(m *testing.M) {
-	// テスト用のインメモリSQLiteデータベースを作成
+	dbSource := generateDsn()
+	if dbSource == "" {
+		println("Skipping tests: DB_SOURCE environment variable not set")
+		return
+	}
+
 	var err error
-	testDB, err = sql.Open("sqlite3", ":memory:")
+	testDB, err = sql.Open("postgres", dbSource)
 	if err != nil {
 		panic(err)
 	}
@@ -32,14 +37,14 @@ func TestMain(m *testing.M) {
 
 	// テーブル作成（実際のスキーマに合わせて調整が必要）
 	createTableSQL := `
-	CREATE TABLE users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
 		email TEXT NOT NULL,
 		phone_number TEXT,
 		password TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	);
 	`
 	_, err = testDB.Exec(createTableSQL)
