@@ -1,0 +1,23 @@
+services:
+  db:
+    build: docker/db
+    env_file: app/.env
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    env_file: app/.env
+    volumes:
+      - ./app:/app
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
