@@ -9,20 +9,10 @@ import (
 )
 
 type User struct {
-	ID          int32
-	Name        string
-	Email       string
-	PhoneNumber sql.NullString
-	Password    string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-type UserCar struct {
-	ID                 int32
-	UserID             int32
-	RegistrationNumber string
-	Model              string
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
+	ID        int64
+	Nickname  string
+	Email     string
+	Password  string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
 }

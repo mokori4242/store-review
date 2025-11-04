@@ -11,39 +11,31 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users(name, email, phone_number, password) VALUES ($1, $2, $3, $4)
-RETURNING id, name, email, phone_number, created_at, updated_at
+INSERT INTO users(nickname, email, password) VALUES ($1, $2, $3)
+RETURNING id, nickname, email, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Name        string
-	Email       string
-	PhoneNumber sql.NullString
-	Password    string
+	Nickname string
+	Email    string
+	Password string
 }
 
 type CreateUserRow struct {
-	ID          int32
-	Name        string
-	Email       string
-	PhoneNumber sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
+	ID        int64
+	Nickname  string
+	Email     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
-		arg.Name,
-		arg.Email,
-		arg.PhoneNumber,
-		arg.Password,
-	)
+	row := q.db.QueryRowContext(ctx, createUser, arg.Nickname, arg.Email, arg.Password)
 	var i CreateUserRow
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Nickname,
 		&i.Email,
-		&i.PhoneNumber,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -54,34 +46,32 @@ const deleteUser = `-- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 	_, err := q.db.ExecContext(ctx, deleteUser, id)
 	return err
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, phone_number, created_at, updated_at
+SELECT id, nickname, email, created_at, updated_at
 FROM users
 WHERE id = $1
 `
 
 type GetUserRow struct {
-	ID          int32
-	Name        string
-	Email       string
-	PhoneNumber sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
+	ID        int64
+	Nickname  string
+	Email     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
 }
 
-func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
+func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
 	var i GetUserRow
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Nickname,
 		&i.Email,
-		&i.PhoneNumber,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -90,43 +80,34 @@ func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET name = coalesce($1, name),
+SET nickname = coalesce($1, nickname),
     email = coalesce($2, email),
-    phone_number = coalesce($3, phone_number),
     updated_at = CURRENT_TIMESTAMP
-WHERE id = $4
-RETURNING id, name, email, phone_number, created_at, updated_at
+WHERE id = $3
+RETURNING id, nickname, email, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	Name        sql.NullString
-	Email       sql.NullString
-	PhoneNumber sql.NullString
-	ID          int32
+	Nickname sql.NullString
+	Email    sql.NullString
+	ID       int64
 }
 
 type UpdateUserRow struct {
-	ID          int32
-	Name        string
-	Email       string
-	PhoneNumber sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
+	ID        int64
+	Nickname  string
+	Email     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, updateUser,
-		arg.Name,
-		arg.Email,
-		arg.PhoneNumber,
-		arg.ID,
-	)
+	row := q.db.QueryRowContext(ctx, updateUser, arg.Nickname, arg.Email, arg.ID)
 	var i UpdateUserRow
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Nickname,
 		&i.Email,
-		&i.PhoneNumber,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

@@ -28,7 +28,7 @@ go-gin/
 ├── Makefile            # データベース管理用コマンド
 ├── sqlite.db           # SQLiteデータベースファイル
 ├── migration/          # データベーススキーママイグレーション
-│   ├── 202509181734_create_users_table.sql
+│   ├── 202511041100_create_users_table.up.sql
 │   └── 202509181735_create_user_cars_table.sql
 ├── query/              # SQLクエリファイル
 │   ├── users.sql

@@ -2,6 +2,10 @@
 description = "into app container"
 run = "docker compose exec app sh"
 
+[tasks.into-postgres]
+description = "into postgres"
+run = "docker compose exec db sh -c \"psql -h localhost -p 5432 -U dev -d devdb\""
+
 [tasks.up]
 description = "up container"
 run = "docker compose up -d"
@@ -9,3 +13,17 @@ run = "docker compose up -d"
 [tasks.down]
 description = "down container"
 run = "docker compose down"
+
+[tasks.migrate]
+description = "migrate"
+run = "migrate -path app/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable up"
+
+[tasks.drop-tables]
+description = "drop tables"
+run = "migrate -path app/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable down"
+
+[tools]
+gomigrate = "latest"
+
+[env]
+DB_CONNECT= "postgres://dev:password@localhost:5432/devdb?sslmode=disable"
