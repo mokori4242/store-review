@@ -9,6 +9,3 @@ run = "docker compose up -d"
 [tasks.down]
 description = "down container"
 run = "docker compose down"
-
-[env]
-NODE_ENV = "pro"
