@@ -78,16 +78,6 @@ func TruncateUsers() error {
 	return err
 }
 
-// GetTestDB テスト用DBを取得
-func GetTestDB() *sql.DB {
-	return testDB
-}
-
-// GetTestQueries テスト用クエリオブジェクトを取得
-func GetTestQueries() *db.Queries {
-	return testQueries
-}
-
 func SetupRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 
