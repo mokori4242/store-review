@@ -3,7 +3,7 @@ package feature_test
 import (
 	"bytes"
 	"encoding/json"
-	"go-gin/handler/register"
+	"go-gin/internal/handler/register"
 	"go-gin/test"
 	"log"
 	"net/http"

@@ -3,13 +3,12 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"go-gin/internal/infrastructure/gen"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	db "go-gin/gen"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

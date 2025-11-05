@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"go-gin/config"
-	configdb "go-gin/config/db"
-	db "go-gin/gen"
-	"go-gin/handler/register"
+	"go-gin/internal/config"
+	cfgdb "go-gin/internal/config/db"
+	"go-gin/internal/handler/register"
+	"go-gin/internal/infrastructure/gen"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +12,7 @@ import (
 func SetupRouter() *gin.Engine {
 	cfg := config.Load()
 
-	conn := configdb.ConnectDB(cfg.DB)
+	conn := cfgdb.ConnectDB(cfg.DB)
 	q := db.New(conn)
 	re := register.NewHandler(q)
 

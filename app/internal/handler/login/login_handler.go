@@ -3,7 +3,7 @@ package login
 import (
 	"database/sql"
 	"errors"
-	db "go-gin/gen"
+	"go-gin/internal/infrastructure/gen"
 	"net/http"
 	"strconv"
 	"time"
@@ -27,7 +27,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func Login(c *gin.Context, q *db.Queries, jwtSecret []byte) {
+func Login(c *gin.Context, q *db.db, jwtSecret []byte) {
 	var req loginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

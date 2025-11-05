@@ -1,7 +1,7 @@
 package register
 
 import (
-	db "go-gin/gen"
+	"go-gin/internal/infrastructure/gen"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

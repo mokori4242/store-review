@@ -2,12 +2,11 @@ package test
 
 import (
 	"database/sql"
+	"go-gin/internal/handler/register"
+	"go-gin/internal/infrastructure/gen"
 	"log"
 	"os"
 	"path/filepath"
-
-	db "go-gin/gen"
-	"go-gin/handler/register"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -34,7 +33,7 @@ func SetupTestDatabase() error {
 	}
 
 	// マイグレーションファイルのパスを取得
-	migrationPath := filepath.Join("..", "..", "migration", "202511041100_create_users_table.up.sql")
+	migrationPath := filepath.Join("..", "..", "internal", "infrastructure", "migration", "202511041100_create_users_table.up.sql")
 	sqlBytes, err := os.ReadFile(migrationPath)
 	if err != nil {
 		return err
