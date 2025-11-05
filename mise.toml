@@ -26,4 +26,4 @@ run = "migrate -path app/migration -database postgres://dev:password@localhost:5
 gomigrate = "latest"
 
 [env]
-DB_CONNECT= "postgres://dev:password@localhost:5432/devdb?sslmode=disable"
+DATABASE_CONNECTION = "postgres://dev:password@localhost:5432/devdb?sslmode=disable"
