@@ -5,35 +5,12 @@ import (
 	"encoding/json"
 	"go-gin/internal/handler/register"
 	"go-gin/test"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
 
-func TestMain(m *testing.M) {
-	// テスト用DBを初期化
-	if err := test.InitTestDB(); err != nil {
-		log.Fatalf("failed to init test DB: %v", err)
-	}
-	defer test.CloseTestDB()
-
-	// テスト用テーブルをセットアップ
-	if err := test.SetupTestDatabase(); err != nil {
-		log.Fatalf("failed to setup test database: %v", err)
-	}
-
-	// テスト実行
-	code := m.Run()
-
-	// テスト終了後にテーブルをクリーンアップ
-	test.CleanupTestDatabase()
-
-	os.Exit(code)
-}
-
-func TestCreateUser(t *testing.T) {
+func TestRegisterUser(t *testing.T) {
 	router := test.SetupRouter()
 
 	tests := []struct {
@@ -108,7 +85,7 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
-func TestValidation(t *testing.T) {
+func TestRegister_Validation(t *testing.T) {
 	router := test.SetupRouter()
 
 	tests := []struct {

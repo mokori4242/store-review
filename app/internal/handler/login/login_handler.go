@@ -13,13 +13,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type loginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+type Handler struct {
+	q         *db.Queries
+	jwtSecret []byte
 }
 
-type loginResponse struct {
-	AccessToken string `json:"accesstoken"`
+func NewHandler(q *db.Queries, jwtSecret []byte) *Handler {
+	return &Handler{
+		q:         q,
+		jwtSecret: jwtSecret,
+	}
 }
 
 type Claims struct {
@@ -27,7 +30,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func Login(c *gin.Context, q *db.db, jwtSecret []byte) {
+func (h *Handler) Login(c *gin.Context) {
 	var req loginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -35,10 +38,10 @@ func Login(c *gin.Context, q *db.db, jwtSecret []byte) {
 	}
 
 	// メールアドレスでユーザーを検索
-	user, err := q.GetUserByEmail(c.Request.Context(), req.Email)
+	user, err := h.q.GetUserByEmail(c.Request.Context(), req.Email)
 	if err != nil {
 		if errors.Is(sql.ErrNoRows, err) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email or password"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
@@ -53,7 +56,7 @@ func Login(c *gin.Context, q *db.db, jwtSecret []byte) {
 	}
 
 	// JWTトークンを生成
-	token, err := GenerateToken(user.ID, jwtSecret)
+	token, err := GenerateToken(user.ID, h.jwtSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return

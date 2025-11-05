@@ -2,6 +2,7 @@ package test
 
 import (
 	"database/sql"
+	"go-gin/internal/handler/login"
 	"go-gin/internal/handler/register"
 	"go-gin/internal/infrastructure/gen"
 	"log"
@@ -92,9 +93,11 @@ func SetupRouter() *gin.Engine {
 
 	// registerハンドラーを作成
 	re := register.NewHandler(testQueries)
+	l := login.NewHandler(testQueries, []byte("test"))
 
 	r := gin.Default()
 	r.POST("/register", re.RegisterUser)
+	r.POST("/login", l.Login)
 
 	return r
 }
