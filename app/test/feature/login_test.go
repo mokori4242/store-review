@@ -63,7 +63,7 @@ func TestLogin(t *testing.T) {
 				"email":    "notexist@example.com",
 				"password": "password123",
 			},
-			expectedStatus: http.StatusBadRequest,
+			expectedStatus: http.StatusUnauthorized,
 		},
 		{
 			name:         "間違ったパスワード",
@@ -180,7 +180,7 @@ func TestLogin_Validation(t *testing.T) {
 				"email":    "test@example.com",
 				"password": "password123",
 			},
-			expectedStatus: http.StatusBadRequest,
+			expectedStatus: http.StatusUnauthorized,
 			description:    "存在しないユーザーは拒否される",
 		},
 	}

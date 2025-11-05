@@ -1,33 +1,21 @@
 package login
 
 import (
-	"database/sql"
-	"errors"
-	"go-gin/internal/infrastructure/gen"
+	"go-gin/internal/usecase/auth"
 	"net/http"
-	"strconv"
-	"time"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Handler struct {
-	q         *db.Queries
-	jwtSecret []byte
+	loginUseCase *auth.LoginUseCase
 }
 
-func NewHandler(q *db.Queries, jwtSecret []byte) *Handler {
+func NewHandler(loginUseCase *auth.LoginUseCase) *Handler {
 	return &Handler{
-		q:         q,
-		jwtSecret: jwtSecret,
+		loginUseCase: loginUseCase,
 	}
-}
-
-type Claims struct {
-	UserID int64 `json:"user_id"`
-	jwt.RegisteredClaims
 }
 
 func (h *Handler) Login(c *gin.Context) {
@@ -37,54 +25,24 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	// メールアドレスでユーザーを検索
-	user, err := h.q.GetUserByEmail(c.Request.Context(), req.Email)
+	// ユースケースの入力を作成
+	input := auth.LoginInput{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	// ユースケースを実行
+	output, err := h.loginUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
-		if errors.Is(sql.ErrNoRows, err) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email or password"})
+		// 認証エラーの処理
+		if strings.Contains(err.Error(), "invalid email or password") {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// パスワードを検証
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
-		return
-	}
-
-	// JWTトークンを生成
-	token, err := GenerateToken(user.ID, h.jwtSecret)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-		return
-	}
-
-	c.JSON(http.StatusOK, loginResponse{AccessToken: token})
-}
-
-func GenerateToken(userID int64, jwtSecret []byte) (string, error) {
-	// トークンの有効期限を設定（例：24時間）
-	expirationTime := time.Now().Add(24 * time.Hour)
-	// クレームを作成
-	claims := &Claims{
-		UserID: userID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			Issuer:    "store-review-app",
-			Subject:   strconv.FormatInt(userID, 10),
-		},
-	}
-	// トークンを生成して署名
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// 署名されたトークン文字列を取得
-	tokenString, err := token.SignedString(jwtSecret)
-	if err != nil {
-		return "", err
-	}
-	return tokenString, nil
+	// レスポンスを作成
+	c.JSON(http.StatusOK, loginResponse{AccessToken: output.AccessToken})
 }

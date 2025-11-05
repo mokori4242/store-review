@@ -1,20 +1,20 @@
 package register
 
 import (
-	"go-gin/internal/infrastructure/gen"
+	"go-gin/internal/usecase/auth"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Handler struct {
-	q *db.Queries
+	registerUseCase *auth.RegisterUseCase
 }
 
-func NewHandler(q *db.Queries) *Handler {
+func NewHandler(registerUseCase *auth.RegisterUseCase) *Handler {
 	return &Handler{
-		q: q,
+		registerUseCase: registerUseCase,
 	}
 }
 
@@ -25,31 +25,32 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// パスワードをハッシュ化
-	hashedP, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	params := db.CreateUserParams{
+	// ユースケースの入力を作成
+	input := auth.RegisterInput{
 		Nickname: req.Nickname,
 		Email:    req.Email,
-		Password: string(hashedP),
+		Password: req.Password,
 	}
 
-	user, err := h.q.CreateUser(c.Request.Context(), params)
+	// ユースケースを実行
+	output, err := h.registerUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
+		// メールアドレス重複エラーの処理
+		if strings.Contains(err.Error(), "already exists") {
+			c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	// レスポンスを作成
 	res := Response{
-		ID:        user.ID,
-		Nickname:  user.Nickname,
-		Email:     user.Email,
-		CreatedAt: user.CreatedAt.Time.String(),
-		UpdatedAt: user.UpdatedAt.Time.String(),
+		ID:        output.User.ID,
+		Nickname:  output.User.Nickname,
+		Email:     output.User.Email,
+		CreatedAt: output.User.CreatedAt.String(),
+		UpdatedAt: output.User.UpdatedAt.String(),
 	}
 	c.JSON(http.StatusCreated, res)
 }

@@ -5,6 +5,8 @@ import (
 	"go-gin/internal/handler/login"
 	"go-gin/internal/handler/register"
 	"go-gin/internal/infrastructure/gen"
+	"go-gin/internal/infrastructure/postgres/repository"
+	"go-gin/internal/usecase/auth"
 	"log"
 	"os"
 	"path/filepath"
@@ -81,13 +83,20 @@ func TruncateUsers() error {
 func SetupRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 
-	// registerハンドラーを作成
-	re := register.NewHandler(testQueries)
-	l := login.NewHandler(testQueries, []byte("test"))
+	// リポジトリを作成
+	userRepo := repository.NewUserRepository(testQueries)
+
+	// ユースケースを作成
+	registerUseCase := auth.NewRegisterUseCase(userRepo)
+	loginUseCase := auth.NewLoginUseCase(userRepo, []byte("test"))
+
+	// ハンドラーを作成
+	registerHandler := register.NewHandler(registerUseCase)
+	loginHandler := login.NewHandler(loginUseCase)
 
 	r := gin.Default()
-	r.POST("/register", re.RegisterUser)
-	r.POST("/login", l.Login)
+	r.POST("/register", registerHandler.RegisterUser)
+	r.POST("/login", loginHandler.Login)
 
 	return r
 }
