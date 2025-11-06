@@ -1,4 +1,4 @@
-module go-gin
+module store-review
 
 go 1.25
 

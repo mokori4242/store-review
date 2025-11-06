@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"go-gin/internal/domain/user"
-	db "go-gin/internal/infrastructure/gen"
+	"store-review/internal/domain/user"
+	db "store-review/internal/infrastructure/gen"
 )
 
 // UserRepository ユーザーリポジトリの実装

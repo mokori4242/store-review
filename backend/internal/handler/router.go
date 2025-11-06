@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"go-gin/internal/config"
-	"go-gin/internal/handler/login"
-	"go-gin/internal/handler/middleware"
-	"go-gin/internal/handler/register"
-	"go-gin/internal/infrastructure/gen"
-	"go-gin/internal/infrastructure/postgres/repository"
-	"go-gin/internal/usecase/auth"
+	"store-review/internal/config"
+	"store-review/internal/handler/login"
+	"store-review/internal/handler/middleware"
+	"store-review/internal/handler/register"
+	"store-review/internal/infrastructure/gen"
+	"store-review/internal/infrastructure/postgres/repository"
+	"store-review/internal/usecase/auth"
 
 	"github.com/gin-gonic/gin"
 )

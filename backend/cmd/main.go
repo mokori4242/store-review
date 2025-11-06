@@ -1,11 +1,11 @@
 package main
 
 import (
-	"go-gin/internal/config"
-	cfgdb "go-gin/internal/config/db"
-	"go-gin/internal/handler"
-	"go-gin/internal/infrastructure/gen"
 	"log"
+	"store-review/internal/config"
+	cfgdb "store-review/internal/config/db"
+	"store-review/internal/handler"
+	"store-review/internal/infrastructure/gen"
 
 	_ "github.com/lib/pq"
 )

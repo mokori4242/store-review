@@ -3,10 +3,10 @@ package feature_test
 import (
 	"bytes"
 	"encoding/json"
-	"go-gin/internal/handler/login"
-	"go-gin/test"
 	"net/http"
 	"net/http/httptest"
+	"store-review/internal/handler/login"
+	"store-review/test"
 	"testing"
 
 	"github.com/gin-gonic/gin"

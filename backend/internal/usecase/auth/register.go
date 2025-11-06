@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
-	"go-gin/internal/domain/user"
+	"store-review/internal/domain/user"
 
 	"golang.org/x/crypto/bcrypt"
 )

@@ -2,14 +2,14 @@ package test
 
 import (
 	"database/sql"
-	"go-gin/internal/handler/login"
-	"go-gin/internal/handler/register"
-	"go-gin/internal/infrastructure/gen"
-	"go-gin/internal/infrastructure/postgres/repository"
-	"go-gin/internal/usecase/auth"
 	"log"
 	"os"
 	"path/filepath"
+	"store-review/internal/handler/login"
+	"store-review/internal/handler/register"
+	"store-review/internal/infrastructure/gen"
+	"store-review/internal/infrastructure/postgres/repository"
+	"store-review/internal/usecase/auth"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"

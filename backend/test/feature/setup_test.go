@@ -1,9 +1,9 @@
 package feature_test
 
 import (
-	"go-gin/test"
 	"log"
 	"os"
+	"store-review/test"
 	"testing"
 )
 

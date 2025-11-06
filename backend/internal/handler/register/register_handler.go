@@ -1,9 +1,9 @@
 package register
 
 import (
-	"go-gin/internal/usecase/auth"
 	"log"
 	"net/http"
+	"store-review/internal/usecase/auth"
 	"strings"
 
 	"github.com/gin-gonic/gin"

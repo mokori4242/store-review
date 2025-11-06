@@ -1,8 +1,8 @@
 package login
 
 import (
-	"go-gin/internal/usecase/auth"
 	"net/http"
+	"store-review/internal/usecase/auth"
 	"strings"
 
 	"github.com/gin-gonic/gin"
