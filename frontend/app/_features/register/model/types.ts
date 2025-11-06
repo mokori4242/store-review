@@ -11,11 +11,9 @@ export interface RegisterRequestBody {
  * ユーザー登録APIのレスポンス
  */
 export interface RegisterResponse {
-  status: number
   id: number
   nickname: string
   email: string
   createdAt: string
   updatedAt: string
-  detail: string
 }

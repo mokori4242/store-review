@@ -7,10 +7,7 @@ export const registerFormSchema = z
       .string()
       .min(1, 'ニックネームは必須です')
       .max(40, 'ニックネームは40文字以内で入力してください'),
-    email: z
-      .string()
-      .min(1, 'メールアドレスは必須です')
-      .email('有効なメールアドレスを入力してください'),
+    email: z.email('有効なメールアドレスを入力してください').min(1, 'メールアドレスは必須です'),
     password: z
       .string()
       .min(1, 'パスワードは必須です')
