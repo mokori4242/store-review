@@ -81,7 +81,7 @@ func (uc *LoginUseCase) generateToken(userID int64) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
-			Issuer:    "store-review-app",
+			Issuer:    "store-review-backend",
 			Subject:   strconv.FormatInt(userID, 10),
 		},
 	}

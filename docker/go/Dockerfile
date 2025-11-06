@@ -1,8 +1,8 @@
 FROM golang:1.25-alpine
 
-WORKDIR /app
-COPY ./app .
-COPY app/go.mod app/go.sum ./
+WORKDIR /backend
+COPY ./backend .
+COPY backend/go.mod backend/go.sum ./
 
 RUN go mod download && \
 go install github.com/air-verse/air@latest
