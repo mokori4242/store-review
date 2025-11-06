@@ -16,11 +16,15 @@ run = "docker compose down"
 
 [tasks.migrate]
 description = "migrate"
-run = "migrate -path app/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable up"
+run = "migrate -path app/internal/infrastructure/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable up"
 
 [tasks.drop-tables]
 description = "drop tables"
-run = "migrate -path app/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable down"
+run = "migrate -path app/internal/infrastructure/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable down"
+
+[tasks.server]
+description = "run server"
+run = "docker compose exec app sh -c \"go run cmd/main.go\""
 
 [tools]
 gomigrate = "latest"
