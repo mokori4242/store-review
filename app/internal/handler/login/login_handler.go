@@ -44,5 +44,5 @@ func (h *Handler) Login(c *gin.Context) {
 	}
 
 	// レスポンスを作成
-	c.JSON(http.StatusOK, loginResponse{AccessToken: output.AccessToken})
+	c.JSON(http.StatusOK, Response{AccessToken: output.AccessToken})
 }

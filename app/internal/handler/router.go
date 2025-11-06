@@ -3,6 +3,7 @@ package handler
 import (
 	"go-gin/internal/config"
 	"go-gin/internal/handler/login"
+	"go-gin/internal/handler/middleware"
 	"go-gin/internal/handler/register"
 	"go-gin/internal/infrastructure/gen"
 	"go-gin/internal/infrastructure/postgres/repository"
@@ -21,6 +22,8 @@ func SetupRouter(q *db.Queries, cfg *config.AppConfig) *gin.Engine {
 	l := login.NewHandler(luc)
 
 	r := gin.Default()
+
+	r.Use(middleware.CorsMiddleware())
 
 	r.POST("/register", re.RegisterUser)
 	r.POST("/login", l.Login)

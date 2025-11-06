@@ -2,6 +2,7 @@ package register
 
 import (
 	"go-gin/internal/usecase/auth"
+	"log"
 	"net/http"
 	"strings"
 
@@ -21,9 +22,12 @@ func NewHandler(registerUseCase *auth.RegisterUseCase) *Handler {
 func (h *Handler) RegisterUser(c *gin.Context) {
 	var req Request
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Failed to bind JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Printf("Register request: nickname=%s, email=%s", req.Nickname, req.Email)
 
 	// ユースケースの入力を作成
 	input := auth.RegisterInput{
@@ -35,6 +39,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	// ユースケースを実行
 	output, err := h.registerUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
+		log.Printf("Register usecase error: %v", err)
 		// メールアドレス重複エラーの処理
 		if strings.Contains(err.Error(), "already exists") {
 			c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
