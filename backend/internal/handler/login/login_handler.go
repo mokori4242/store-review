@@ -19,7 +19,7 @@ func NewHandler(loginUseCase *auth.LoginUseCase) *Handler {
 }
 
 func (h *Handler) Login(c *gin.Context) {
-	var req loginRequest
+	var req Request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

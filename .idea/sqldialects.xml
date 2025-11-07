@@ -3,7 +3,11 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/migration/202511041100_create_users_table.down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/migration/202511041100_create_users_table.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/migration/202511060904_create_store_web_profiles_table.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/query/stores.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/query/users.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/seed/user_seed.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/backend/test/helper.go" dialect="PostgreSQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>

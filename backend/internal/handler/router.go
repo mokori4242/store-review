@@ -5,28 +5,35 @@ import (
 	"store-review/internal/handler/login"
 	"store-review/internal/handler/middleware"
 	"store-review/internal/handler/register"
+	"store-review/internal/handler/store"
 	"store-review/internal/infrastructure/gen"
 	"store-review/internal/infrastructure/postgres/repository"
 	"store-review/internal/usecase/auth"
+	suc "store-review/internal/usecase/store"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(q *db.Queries, cfg *config.AppConfig) *gin.Engine {
-	ur := repository.NewUserRepository(q)
+	userR := repository.NewUserRepository(q)
+	storeR := repository.NewStoreRepository(q)
 
-	reuc := auth.NewRegisterUseCase(ur)
-	luc := auth.NewLoginUseCase(ur, cfg.JWTSecret)
+	registerUC := auth.NewRegisterUseCase(userR)
+	loginUC := auth.NewLoginUseCase(userR, cfg.JWTSecret)
+	sListUC := suc.NewListUseCase(storeR)
 
-	re := register.NewHandler(reuc)
-	l := login.NewHandler(luc)
+	registerH := register.NewHandler(registerUC)
+	loginH := login.NewHandler(loginUC)
+	storeH := store.NewHandler(sListUC)
 
 	r := gin.Default()
 
 	r.Use(middleware.CorsMiddleware())
+	jwt := r.Group("", middleware.JwtMiddleware(cfg.JWTSecret))
 
-	r.POST("/register", re.RegisterUser)
-	r.POST("/login", l.Login)
+	r.POST("/register", registerH.RegisterUser)
+	r.POST("/login", loginH.Login)
+	jwt.GET("/stores", storeH.GetList)
 
 	return r
 }

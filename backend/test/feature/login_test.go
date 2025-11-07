@@ -33,7 +33,8 @@ func registerTestUser(router *gin.Engine, email, password, nickname string) erro
 }
 
 func TestLogin(t *testing.T) {
-	router := test.SetupRouter()
+	test.TPostgres(t)
+	router := test.SetupRouter(t)
 
 	tests := []struct {
 		name           string
@@ -97,11 +98,6 @@ func TestLogin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// テストケース実行前にusersテーブルをクリーンアップ
-			if err := test.TruncateUsers(); err != nil {
-				t.Fatalf("failed to truncate table: %v", err)
-			}
-
 			// テストユーザーを事前登録
 			if tt.setupUser {
 				if err := registerTestUser(router, tt.userEmail, tt.userPassword, tt.userNickname); err != nil {
@@ -139,7 +135,8 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLogin_Validation(t *testing.T) {
-	router := test.SetupRouter()
+	test.TPostgres(t)
+	router := test.SetupRouter(t)
 
 	tests := []struct {
 		name           string

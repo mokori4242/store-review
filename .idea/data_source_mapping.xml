@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/backend/internal/infrastructure/migration/202511060904_create_store_web_profiles_table.up.sql" value="19b6dd4c-225a-4b03-a8dc-540d2381a71d" />
+  </component>
+</project>
