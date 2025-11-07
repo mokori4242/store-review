@@ -95,13 +95,15 @@ func SetupRouter(t *testing.T) *gin.Engine {
 
 	gin.SetMode(gin.TestMode)
 
+	tJwtSecret := []byte("test")
+
 	// リポジトリを作成
 	userR := repository.NewUserRepository(testQueries)
 	storeR := repository.NewStoreRepository(testQueries)
 
 	// ユースケースを作成
 	registerUC := auth.NewRegisterUseCase(userR)
-	loginUC := auth.NewLoginUseCase(userR, []byte("test"))
+	loginUC := auth.NewLoginUseCase(userR, tJwtSecret)
 	sListUC := suc.NewListUseCase(storeR)
 
 	// ハンドラーを作成
@@ -112,7 +114,7 @@ func SetupRouter(t *testing.T) *gin.Engine {
 	r := gin.Default()
 	r.POST("/register", registerH.RegisterUser)
 	r.POST("/login", loginH.Login)
-	r.GET("/stores", middleware.JwtMiddleware([]byte("test")), storeH.GetList)
+	r.GET("/stores", middleware.JwtMiddleware(tJwtSecret), storeH.GetList)
 
 	return r
 }
