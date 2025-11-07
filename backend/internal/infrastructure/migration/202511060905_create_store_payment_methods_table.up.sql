@@ -6,5 +6,7 @@ CREATE TABLE IF NOT EXISTS store_payment_methods (
      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_store_payment_methods_store_id ON store_payment_methods(store_id);
+
 COMMENT ON TABLE store_payment_methods IS '店舗の支払い方法を管理するテーブル';
 COMMENT ON COLUMN store_payment_methods.method IS '0:PayPay,1:Cash,2:RakutenPay,etc...';

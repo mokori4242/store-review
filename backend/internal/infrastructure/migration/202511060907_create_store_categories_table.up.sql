@@ -7,4 +7,7 @@ CREATE TABLE IF NOT EXISTS store_categories (
    UNIQUE (store_id, category_id)
 );
 
+CREATE INDEX idx_store_categories_store_id ON store_categories(store_id);
+CREATE INDEX idx_store_categories_category_id ON store_categories(category_id);
+
 COMMENT ON TABLE store_categories IS '店舗と店舗カテゴリーの中間テーブル';

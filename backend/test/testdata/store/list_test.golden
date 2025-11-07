@@ -1,0 +1,163 @@
+{
+  "Stores": [
+    {
+      "id": 1,
+      "name": "カフェ ブルームーン",
+      "regularHolidays": [
+        "0"
+      ],
+      "categoryNames": [
+        "カフェ"
+      ],
+      "paymentMethods": [
+        "0",
+        "1"
+      ],
+      "webProfiles": [
+        "https://bluemoon-cafe.example.com",
+        "https://instagram.com/bluemoon_cafe"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "イタリアン トラットリア",
+      "regularHolidays": [
+        "2"
+      ],
+      "categoryNames": [
+        "イタリアン"
+      ],
+      "paymentMethods": [
+        "0",
+        "1",
+        "2"
+      ],
+      "webProfiles": [
+        "https://trattoria-italian.example.com"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "居酒屋 さくら",
+      "regularHolidays": [],
+      "categoryNames": [
+        "居酒屋"
+      ],
+      "paymentMethods": [
+        "0",
+        "1"
+      ],
+      "webProfiles": [
+        "https://x.com/sakura_izakaya"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "ラーメン 一番",
+      "regularHolidays": [],
+      "categoryNames": [
+        "ラーメン"
+      ],
+      "paymentMethods": [
+        "1"
+      ],
+      "webProfiles": [
+        "https://ramen-ichiban.example.com"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "焼肉 大将",
+      "regularHolidays": [],
+      "categoryNames": [
+        "焼肉"
+      ],
+      "paymentMethods": [
+        "0",
+        "1",
+        "2"
+      ],
+      "webProfiles": [
+        "https://facebook.com/yakiniku.taisho"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "和食 季節",
+      "regularHolidays": [
+        "6"
+      ],
+      "categoryNames": [
+        "和食"
+      ],
+      "paymentMethods": [
+        "1",
+        "2"
+      ],
+      "webProfiles": [
+        "https://washoku-kisetsu.example.com"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "中華料理 龍門",
+      "regularHolidays": [],
+      "categoryNames": [
+        "中華"
+      ],
+      "paymentMethods": [
+        "0",
+        "1"
+      ],
+      "webProfiles": [
+        "https://instagram.com/ryumon_chinese"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "カフェ サンシャイン",
+      "regularHolidays": [],
+      "categoryNames": [
+        "カフェ"
+      ],
+      "paymentMethods": [
+        "0",
+        "1",
+        "2"
+      ],
+      "webProfiles": [
+        "https://instagram.com/sunshine_cafe"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "バー ミッドナイト",
+      "regularHolidays": [],
+      "categoryNames": [
+        "バー"
+      ],
+      "paymentMethods": [
+        "1"
+      ],
+      "webProfiles": [
+        "https://midnight-bar.example.com"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "レストラン オーシャンビュー",
+      "regularHolidays": [],
+      "categoryNames": [
+        "レストラン"
+      ],
+      "paymentMethods": [
+        "0",
+        "1",
+        "2"
+      ],
+      "webProfiles": [
+        "https://oceanview-restaurant.example.com"
+      ]
+    }
+  ]
+}

@@ -11,7 +11,8 @@ import (
 )
 
 func TestRegisterUser(t *testing.T) {
-	router := test.SetupRouter()
+	test.TPostgres(t)
+	router := test.SetupRouter(t)
 
 	tests := []struct {
 		name           string
@@ -47,11 +48,6 @@ func TestRegisterUser(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// テストケース実行前にusersテーブルをクリーンアップ
-			if err := test.TruncateUsers(); err != nil {
-				t.Fatalf("failed to truncate table: %v", err)
-			}
-
 			jsonBody, _ := json.Marshal(tt.body)
 			req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer(jsonBody))
 			req.Header.Set("Content-Type", "application/json")
@@ -86,7 +82,8 @@ func TestRegisterUser(t *testing.T) {
 }
 
 func TestRegister_Validation(t *testing.T) {
-	router := test.SetupRouter()
+	test.TPostgres(t)
+	router := test.SetupRouter(t)
 
 	tests := []struct {
 		name           string

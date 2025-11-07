@@ -8,5 +8,7 @@ CREATE TABLE IF NOT EXISTS store_business_hours (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_store_business_hours_store_id ON store_business_hours(store_id);
+
 COMMENT ON TABLE store_business_hours IS '店舗の営業時間を管理するテーブル';
 COMMENT ON COLUMN store_business_hours.business_status IS '0:午前のみ,1:午後のみ,2:通し,3:休憩';
