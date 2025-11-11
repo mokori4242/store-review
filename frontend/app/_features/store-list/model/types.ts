@@ -9,10 +9,3 @@ export interface Store {
   paymentMethods: string[]
   webProfiles: string[]
 }
-
-/**
- * 店舗一覧APIのレスポンス
- */
-export interface StoreListResponse {
-  stores: Store[]
-}

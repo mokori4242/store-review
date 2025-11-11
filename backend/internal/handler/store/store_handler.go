@@ -25,9 +25,9 @@ func (h *Handler) GetList(c *gin.Context) {
 		return
 	}
 
-	srs := make([]Response, len(output.Stores))
+	res := make([]Response, len(output.Stores))
 	for i, s := range output.Stores {
-		srs[i] = Response{
+		res[i] = Response{
 			ID:              s.ID,
 			Name:            s.Name,
 			RegularHolidays: parseHolidays(s.RegularHolidays),
@@ -37,9 +37,5 @@ func (h *Handler) GetList(c *gin.Context) {
 		}
 	}
 
-	// レスポンスを作成
-	res := ListResponse{
-		Stores: srs,
-	}
 	c.JSON(http.StatusOK, res)
 }
