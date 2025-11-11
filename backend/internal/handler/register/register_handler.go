@@ -29,14 +29,12 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 
 	log.Printf("Register request: nickname=%s, email=%s", req.Nickname, req.Email)
 
-	// ユースケースの入力を作成
 	input := auth.RegisterInput{
 		Nickname: req.Nickname,
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
-	// ユースケースを実行
 	output, err := h.registerUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
 		log.Printf("Register usecase error: %v", err)
@@ -49,7 +47,6 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// レスポンスを作成
 	res := Response{
 		ID:        output.User.ID,
 		Nickname:  output.User.Nickname,

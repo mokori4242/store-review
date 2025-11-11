@@ -31,10 +31,9 @@ export const LoginFormContainer = () => {
 
   const loginMutation = useLogin({
     onSuccess: () => {
-      // JWTはHTTPOnly Cookieに保存されるため、localStorageへの保存は不要
       setSuccessMessage('ログインが完了しました！')
       setGeneralError(undefined)
-      router.push('/')
+      router.push('/stores')
     },
     onError: (error: ResponseError) => {
       if (error) {

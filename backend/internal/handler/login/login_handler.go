@@ -25,13 +25,11 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	// ユースケースの入力を作成
 	input := auth.LoginInput{
 		Email:    req.Email,
 		Password: req.Password,
 	}
 
-	// ユースケースを実行
 	output, err := h.loginUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
 		// 認証エラーの処理
@@ -43,7 +41,6 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	// JWTをHTTPOnly + Secure Cookieに設定
 	c.SetCookie(
 		"accessToken",
 		output.AccessToken,
