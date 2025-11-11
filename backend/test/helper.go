@@ -71,6 +71,13 @@ func TPostgres(t *testing.T) {
 		t.Fatalf("Failed to connect to database: %v", err)
 	}
 
+	// テスト時のみusersの作成・更新日の時間を固定
+	// 増えてきたら関数に切り出すのが良さそう
+	_, err = testDB.Exec("ALTER TABLE users ALTER COLUMN created_at SET DEFAULT '2025-11-11 12:00:00'::timestamp, ALTER COLUMN updated_at SET DEFAULT '2025-11-11 12:00:00'::timestamp;")
+	if err != nil {
+		t.Fatalf("Failed to lock time: %v", err)
+	}
+
 	// クエリオブジェクトを作成
 	testQueries = db.New(testDB)
 }

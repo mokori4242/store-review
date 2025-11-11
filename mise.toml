@@ -28,6 +28,3 @@ run = "docker compose exec go sh -c \"go run cmd/main.go\""
 
 [tools]
 gomigrate = "latest"
-
-[env]
-DATABASE_CONNECTION = "postgres://dev:password@localhost:5432/devdb?sslmode=disable"

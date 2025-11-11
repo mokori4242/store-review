@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestGetListStores(t *testing.T) {
+func TestGetListStores_Success(t *testing.T) {
 	test.TPostgres(t)
 	err := test.Seeding(t, "../../../internal/infrastructure/seed/store_seed.sql")
 	err = test.Seeding(t, "../../../internal/infrastructure/seed/user_seed.sql")

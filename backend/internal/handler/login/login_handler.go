@@ -36,7 +36,7 @@ func (h *Handler) Login(c *gin.Context) {
 	if err != nil {
 		// 認証エラーの処理
 		if strings.Contains(err.Error(), "invalid email or password") {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email or password"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
