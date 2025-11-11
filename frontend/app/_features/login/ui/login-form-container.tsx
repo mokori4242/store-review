@@ -30,11 +30,8 @@ export const LoginFormContainer = () => {
   })
 
   const loginMutation = useLogin({
-    onSuccess: (data) => {
-      // access_tokenをlocalStorageに保存
-      if (data.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken)
-      }
+    onSuccess: () => {
+      // JWTはHTTPOnly Cookieに保存されるため、localStorageへの保存は不要
       setSuccessMessage('ログインが完了しました！')
       setGeneralError(undefined)
       router.push('/')

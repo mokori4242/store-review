@@ -30,9 +30,9 @@ func (h *Handler) GetList(c *gin.Context) {
 		srs[i] = Response{
 			ID:              s.ID,
 			Name:            s.Name,
-			RegularHolidays: s.RegularHolidays,
+			RegularHolidays: parseHolidays(s.RegularHolidays),
 			CategoryNames:   s.CategoryNames,
-			PaymentMethods:  s.PaymentMethods,
+			PaymentMethods:  parsePaymentMethods(s.PaymentMethods),
 			WebProfiles:     s.WebProfiles,
 		}
 	}

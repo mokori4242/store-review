@@ -15,13 +15,12 @@ func TestGetListStores(t *testing.T) {
 		t.Fatalf("Failed to seed: %v", err)
 	}
 	router := test.SetupRouter(t)
-
-	token := test.GetAccessToken(t, router)
+	c := test.GetCookie(t, router)
 
 	// ストア一覧を取得
 	req, _ := http.NewRequest("GET", "/stores", nil)
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token)
+	req.AddCookie(c)
 
 	w := httptest.NewRecorder()
 

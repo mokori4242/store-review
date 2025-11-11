@@ -194,7 +194,7 @@ func GetStringFromTestFile(t *testing.T, path string) string {
 	return string(bt)
 }
 
-func GetAccessToken(t *testing.T, r *gin.Engine) string {
+func GetCookie(t *testing.T, r *gin.Engine) *http.Cookie {
 	t.Helper()
 
 	// ログインしてトークンを取得
@@ -208,13 +208,7 @@ func GetAccessToken(t *testing.T, r *gin.Engine) string {
 	loginW := httptest.NewRecorder()
 	r.ServeHTTP(loginW, loginReq)
 
-	var loginResponse login.Response
-	err := json.Unmarshal(loginW.Body.Bytes(), &loginResponse)
-	if err != nil {
-		t.Fatalf("failed json.Unmarshal '%#v'", err)
-	}
-
-	return loginResponse.AccessToken
+	return loginW.Result().Cookies()[0]
 }
 
 func migrateDB(connStr string) error {

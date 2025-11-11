@@ -43,6 +43,16 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	// レスポンスを作成
-	c.JSON(http.StatusOK, Response{AccessToken: output.AccessToken})
+	// JWTをHTTPOnly + Secure Cookieに設定
+	c.SetCookie(
+		"accessToken",
+		output.AccessToken,
+		24*60*60,
+		"/",
+		"",
+		false, // 本番ではtrueに
+		true,
+	)
+
+	c.JSON(http.StatusOK, gin.H{})
 }
