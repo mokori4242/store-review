@@ -26,9 +26,5 @@ run = "migrate -path backend/internal/infrastructure/migration -database postgre
 description = "seeding"
 run = "cat backend/internal/infrastructure/seed/*.sql | docker compose exec -T db psql -U dev -d devdb"
 
-[tasks.server]
-description = "run server"
-run = "docker compose exec go sh -c \"go run cmd/main.go\""
-
 [tools]
 gomigrate = "latest"
