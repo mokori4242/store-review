@@ -4,7 +4,7 @@ run = "docker compose exec go sh"
 
 [tasks.into-postgres]
 description = "into postgres"
-run = "docker compose exec db sh -c \"psql -h localhost -p 5432 -U dev -d devdb\""
+run = "docker compose exec db psql -U dev -d devdb"
 
 [tasks.up]
 description = "up container"
@@ -21,6 +21,10 @@ run = "migrate -path backend/internal/infrastructure/migration -database postgre
 [tasks.drop-tables]
 description = "drop tables"
 run = "migrate -path backend/internal/infrastructure/migration -database postgres://dev:password@localhost:5432/devdb?sslmode=disable down"
+
+[tasks.seed]
+description = "seeding"
+run = "cat backend/internal/infrastructure/seed/*.sql | docker compose exec -T db psql -U dev -d devdb"
 
 [tasks.server]
 description = "run server"
