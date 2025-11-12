@@ -41,6 +41,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(
 		"accessToken",
 		output.AccessToken,

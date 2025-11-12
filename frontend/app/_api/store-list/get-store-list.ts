@@ -32,6 +32,7 @@ export const getStoreList = async (): Promise<Store[]> => {
     if (error instanceof ResponseError) {
       throw error
     }
+
     throw new Error('予期せぬエラー', { cause: error })
   }
 }

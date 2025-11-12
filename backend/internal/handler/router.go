@@ -28,7 +28,7 @@ func SetupRouter(q *db.Queries, cfg *config.AppConfig) *gin.Engine {
 
 	r := gin.Default()
 
-	r.Use(middleware.CorsMiddleware())
+	r.Use(middleware.CorsMiddleware(), middleware.CSRFMiddleware())
 	jwt := r.Group("", middleware.JwtMiddleware(cfg.JWTSecret))
 
 	r.POST("/register", registerH.RegisterUser)
