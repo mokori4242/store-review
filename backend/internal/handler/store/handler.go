@@ -27,14 +27,7 @@ func (h *Handler) GetList(c *gin.Context) {
 
 	res := make([]Response, len(output.Stores))
 	for i, s := range output.Stores {
-		res[i] = Response{
-			ID:              s.ID,
-			Name:            s.Name,
-			RegularHolidays: parseHolidays(s.RegularHolidays),
-			CategoryNames:   s.CategoryNames,
-			PaymentMethods:  parsePaymentMethods(s.PaymentMethods),
-			WebProfiles:     s.WebProfiles,
-		}
+		res[i] = newResponse(s)
 	}
 
 	c.JSON(http.StatusOK, res)

@@ -1,5 +1,7 @@
 package store
 
+import "store-review/internal/domain/store"
+
 type Response struct {
 	ID              int64    `json:"id"`
 	Name            string   `json:"name"`
@@ -7,6 +9,17 @@ type Response struct {
 	CategoryNames   []string `json:"categoryNames"`
 	PaymentMethods  []string `json:"paymentMethods"`
 	WebProfiles     []string `json:"webProfiles"`
+}
+
+func newResponse(s *store.Store) Response {
+	return Response{
+		ID:              s.ID,
+		Name:            s.Name,
+		RegularHolidays: parseHolidays(s.RegularHolidays),
+		CategoryNames:   s.CategoryNames,
+		PaymentMethods:  parsePaymentMethods(s.PaymentMethods),
+		WebProfiles:     s.WebProfiles,
+	}
 }
 
 func parseHolidays(hs []string) []string {
