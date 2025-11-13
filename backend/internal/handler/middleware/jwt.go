@@ -15,6 +15,10 @@ func JwtMiddleware(JWTSecret []byte) gin.HandlerFunc {
 		var tokenString string
 
 		tokenString, err := c.Cookie("accessToken")
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing authentication token"})
+			return
+		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// 署名方式がHMACか確認（セキュリティ上必須）
