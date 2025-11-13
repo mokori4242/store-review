@@ -8,6 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	name     = "accessToken"
+	maxAge   = 24 * 60 * 60
+	path     = "/"
+	domain   = ""
+	secure   = false
+	httpOnly = true
+)
+
 type Handler struct {
 	loginUseCase *auth.LoginUseCase
 }
@@ -43,13 +52,13 @@ func (h *Handler) Login(c *gin.Context) {
 
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(
-		"accessToken",
+		name,
 		output.AccessToken,
-		24*60*60,
-		"/",
-		"",
-		false, // 本番ではtrueに
-		true,
+		maxAge,
+		path,
+		domain,
+		secure, // 本番ではtrueに
+		httpOnly,
 	)
 
 	c.JSON(http.StatusOK, gin.H{})
