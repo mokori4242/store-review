@@ -1,7 +1,7 @@
 package register
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"store-review/internal/usecase/auth"
 	"strings"
@@ -10,24 +10,26 @@ import (
 )
 
 type Handler struct {
+	logger          *slog.Logger
 	registerUseCase *auth.RegisterUseCase
 }
 
-func NewHandler(registerUseCase *auth.RegisterUseCase) *Handler {
+func NewHandler(logger *slog.Logger, registerUseCase *auth.RegisterUseCase) *Handler {
 	return &Handler{
+		logger:          logger,
 		registerUseCase: registerUseCase,
 	}
 }
 
 func (h *Handler) RegisterUser(c *gin.Context) {
+	ctx := c.Request.Context()
+
 	var req Request
 	if err := c.ShouldBindJSON(&req); err != nil {
-		log.Printf("Failed to bind JSON: %v", err)
+		h.logger.ErrorContext(ctx, "Failed to bind JSON", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	log.Printf("Register request: nickname=%s, email=%s", req.Nickname, req.Email)
 
 	input := auth.RegisterInput{
 		Nickname: req.Nickname,
@@ -37,7 +39,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 
 	output, err := h.registerUseCase.Execute(c.Request.Context(), input)
 	if err != nil {
-		log.Printf("Register usecase error: %v", err)
+		h.logger.ErrorContext(ctx, "Register usecase error", "error", err)
 		// メールアドレス重複エラーの処理
 		if strings.Contains(err.Error(), "already exists") {
 			c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})

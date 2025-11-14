@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"store-review/internal/config"
 	"store-review/internal/handler/login"
 	"store-review/internal/handler/middleware"
@@ -14,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(q *db.Queries, cfg *config.AppConfig) *gin.Engine {
+func SetupRouter(q *db.Queries, cfg *config.AppConfig, logger *slog.Logger) *gin.Engine {
 	userR := repository.NewUserRepository(q)
 	storeR := repository.NewStoreRepository(q)
 
@@ -22,13 +23,13 @@ func SetupRouter(q *db.Queries, cfg *config.AppConfig) *gin.Engine {
 	loginUC := auth.NewLoginUseCase(userR, cfg.JWTSecret)
 	sListUC := suc.NewListUseCase(storeR)
 
-	registerH := register.NewHandler(registerUC)
-	loginH := login.NewHandler(loginUC)
+	registerH := register.NewHandler(logger, registerUC)
+	loginH := login.NewHandler(logger, loginUC)
 	storeH := store.NewHandler(sListUC)
 
 	r := gin.Default()
 
-	r.Use(middleware.CorsMiddleware(), middleware.CSRFMiddleware())
+	r.Use(middleware.LogContextMiddleware(logger), middleware.CorsMiddleware(), middleware.CSRFMiddleware(logger))
 	jwt := r.Group("", middleware.JwtMiddleware(cfg.JWTSecret))
 
 	r.POST("/register", registerH.RegisterUser)

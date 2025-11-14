@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	cfglog "store-review/internal/config/log"
 	"store-review/internal/handler/login"
 	"store-review/internal/handler/middleware"
 	"store-review/internal/handler/register"
@@ -104,6 +105,8 @@ func SetupRouter(t *testing.T) *gin.Engine {
 
 	tJwtSecret := []byte("test")
 
+	logger := cfglog.NewSlog()
+
 	// リポジトリを作成
 	userR := repository.NewUserRepository(testQueries)
 	storeR := repository.NewStoreRepository(testQueries)
@@ -114,14 +117,18 @@ func SetupRouter(t *testing.T) *gin.Engine {
 	sListUC := suc.NewListUseCase(storeR)
 
 	// ハンドラーを作成
-	registerH := register.NewHandler(registerUC)
-	loginH := login.NewHandler(loginUC)
+	registerH := register.NewHandler(logger, registerUC)
+	loginH := login.NewHandler(logger, loginUC)
 	storeH := store.NewHandler(sListUC)
 
 	r := gin.Default()
+
+	r.Use(middleware.LogContextMiddleware(logger), middleware.CorsMiddleware(), middleware.CSRFMiddleware(logger))
+	jwt := r.Group("", middleware.JwtMiddleware(tJwtSecret))
+
 	r.POST("/register", registerH.RegisterUser)
 	r.POST("/login", loginH.Login)
-	r.GET("/stores", middleware.JwtMiddleware(tJwtSecret), storeH.GetList)
+	jwt.GET("/stores", storeH.GetList)
 
 	return r
 }
