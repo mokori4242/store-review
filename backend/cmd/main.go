@@ -16,7 +16,7 @@ func main() {
 	logger := cfglog.NewSlog()
 
 	conn := cfgdb.ConnectDB(cfg.DB, logger)
-	q := db.New(conn)
+	q := sqlc.New(conn)
 
 	r := handler.SetupRouter(q, cfg, logger)
 	err := r.Run()

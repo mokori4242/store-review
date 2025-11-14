@@ -2,19 +2,19 @@
 // versions:
 //   sqlc v1.30.0
 
-package db
+package sqlc
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // 店舗の基本情報を管理するテーブル
 type Store struct {
 	ID        int64
 	Name      string
-	Address   sql.NullString
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	Address   pgtype.Text
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 // 店舗の営業時間を管理するテーブル
@@ -23,10 +23,10 @@ type StoreBusinessHour struct {
 	StoreID int64
 	// 0:午前のみ,1:午後のみ,2:通し,3:休憩
 	BusinessStatus int16
-	OpenTime       sql.NullTime
-	CloseTime      sql.NullTime
-	CreatedAt      sql.NullTime
-	UpdatedAt      sql.NullTime
+	OpenTime       pgtype.Time
+	CloseTime      pgtype.Time
+	CreatedAt      pgtype.Timestamp
+	UpdatedAt      pgtype.Timestamp
 }
 
 // 店舗と店舗カテゴリーの中間テーブル
@@ -34,16 +34,16 @@ type StoreCategory struct {
 	ID         int64
 	StoreID    int64
 	CategoryID int64
-	CreatedAt  sql.NullTime
-	UpdatedAt  sql.NullTime
+	CreatedAt  pgtype.Timestamp
+	UpdatedAt  pgtype.Timestamp
 }
 
 // 店舗カテゴリーのマスターテーブル
 type StoreCategoryMaster struct {
 	ID        int64
 	Name      string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 // 店舗の支払い方法を管理するテーブル
@@ -52,8 +52,8 @@ type StorePaymentMethod struct {
 	StoreID int64
 	// 0:PayPay,1:Cash,2:RakutenPay,etc...
 	Method    int16
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 // 店舗の定休日を管理するテーブル
@@ -62,18 +62,18 @@ type StoreRegularHoliday struct {
 	StoreID int64
 	// 0~6 = 月~日
 	DayOfWeek int16
-	CreatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
 }
 
 // 店舗の来店統計を管理するテーブル
 type StoreVisitStat struct {
 	StoreID int64
 	// 合計訪問数
-	TotalVisitCount sql.NullInt32
+	TotalVisitCount pgtype.Int4
 	// 最終訪問日
-	LastVisitedAt sql.NullTime
-	CreatedAt     sql.NullTime
-	UpdatedAt     sql.NullTime
+	LastVisitedAt pgtype.Timestamp
+	CreatedAt     pgtype.Timestamp
+	UpdatedAt     pgtype.Timestamp
 }
 
 // 店舗のwebを管理するテーブル
@@ -83,8 +83,8 @@ type StoreWebProfile struct {
 	// 0:website,1:x,2:instagram,3:tiktok,4:facebook,etc...
 	Platform  int16
 	Url       string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 type User struct {
@@ -92,6 +92,6 @@ type User struct {
 	Nickname  string
 	Email     string
 	Password  string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }

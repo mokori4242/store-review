@@ -3,12 +3,10 @@
 //   sqlc v1.30.0
 // source: stores.sql
 
-package db
+package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
 
 const getListStores = `-- name: GetListStores :many
@@ -36,7 +34,7 @@ type GetListStoresRow struct {
 }
 
 func (q *Queries) GetListStores(ctx context.Context) ([]GetListStoresRow, error) {
-	rows, err := q.db.QueryContext(ctx, getListStores)
+	rows, err := q.db.Query(ctx, getListStores)
 	if err != nil {
 		return nil, err
 	}
@@ -47,17 +45,14 @@ func (q *Queries) GetListStores(ctx context.Context) ([]GetListStoresRow, error)
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			pq.Array(&i.RegularHolidays),
-			pq.Array(&i.CategoryNames),
-			pq.Array(&i.PaymentMethods),
-			pq.Array(&i.WebProfiles),
+			&i.RegularHolidays,
+			&i.CategoryNames,
+			&i.PaymentMethods,
+			&i.WebProfiles,
 		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(q *db.Queries, cfg *config.AppConfig, logger *slog.Logger) *gin.Engine {
+func SetupRouter(q *sqlc.Queries, cfg *config.AppConfig, logger *slog.Logger) *gin.Engine {
 	userR := repository.NewUserRepository(q)
 	storeR := repository.NewStoreRepository(q)
 
