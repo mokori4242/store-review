@@ -14,7 +14,7 @@ func CSRFMiddleware(logger *slog.Logger) gin.HandlerFunc {
 	// 信頼オリジンの設定
 	err := csrfProtection.AddTrustedOrigin("http://localhost:3000")
 	if err != nil {
-		logger.Error("fatal not origin", "error", err)
+		logger.Error("not add origin", "error", err)
 	}
 
 	// カスタムdenyハンドラの設定
