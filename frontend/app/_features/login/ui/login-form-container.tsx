@@ -30,14 +30,10 @@ export const LoginFormContainer = () => {
   })
 
   const loginMutation = useLogin({
-    onSuccess: (data) => {
-      // access_tokenをlocalStorageに保存
-      if (data.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken)
-      }
+    onSuccess: () => {
       setSuccessMessage('ログインが完了しました！')
       setGeneralError(undefined)
-      router.push('/')
+      router.push('/stores')
     },
     onError: (error: ResponseError) => {
       if (error) {

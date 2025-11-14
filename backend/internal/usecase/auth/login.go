@@ -11,19 +11,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// LoginInput ログインの入力
 type LoginInput struct {
 	Email    string
 	Password string
 }
 
-// LoginOutput ログインの出力
 type LoginOutput struct {
 	AccessToken string
 	User        *user.User
 }
 
-// LoginUseCase ログインのユースケース
 type LoginUseCase struct {
 	userRepo  user.Repository
 	jwtSecret []byte
@@ -37,7 +34,6 @@ func NewLoginUseCase(userRepo user.Repository, jwtSecret []byte) *LoginUseCase {
 	}
 }
 
-// Claims JWT クレーム
 type Claims struct {
 	UserID int64 `json:"user_id"`
 	jwt.RegisteredClaims
@@ -45,7 +41,6 @@ type Claims struct {
 
 // Execute ログインを実行
 func (uc *LoginUseCase) Execute(ctx context.Context, input LoginInput) (*LoginOutput, error) {
-	// メールアドレスでユーザーを検索
 	u, err := uc.userRepo.FindByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
@@ -60,7 +55,6 @@ func (uc *LoginUseCase) Execute(ctx context.Context, input LoginInput) (*LoginOu
 		return nil, errors.New("invalid email or password")
 	}
 
-	// JWTトークンを生成
 	token, err := uc.generateToken(u.ID)
 	if err != nil {
 		return nil, err

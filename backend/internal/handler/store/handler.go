@@ -25,21 +25,10 @@ func (h *Handler) GetList(c *gin.Context) {
 		return
 	}
 
-	srs := make([]Response, len(output.Stores))
+	res := make([]response, len(output.Stores))
 	for i, s := range output.Stores {
-		srs[i] = Response{
-			ID:              s.ID,
-			Name:            s.Name,
-			RegularHolidays: s.RegularHolidays,
-			CategoryNames:   s.CategoryNames,
-			PaymentMethods:  s.PaymentMethods,
-			WebProfiles:     s.WebProfiles,
-		}
+		res[i] = newResponse(s)
 	}
 
-	// レスポンスを作成
-	res := ListResponse{
-		Stores: srs,
-	}
 	c.JSON(http.StatusOK, res)
 }

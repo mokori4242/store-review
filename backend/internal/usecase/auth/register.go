@@ -8,19 +8,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// RegisterInput ユーザー登録の入力
 type RegisterInput struct {
 	Nickname string
 	Email    string
 	Password string
 }
 
-// RegisterOutput ユーザー登録の出力
 type RegisterOutput struct {
 	User *user.User
 }
 
-// RegisterUseCase ユーザー登録のユースケース
 type RegisterUseCase struct {
 	userRepo user.Repository
 }
@@ -34,7 +31,6 @@ func NewRegisterUseCase(userRepo user.Repository) *RegisterUseCase {
 
 // Execute ユーザー登録を実行
 func (uc *RegisterUseCase) Execute(ctx context.Context, input RegisterInput) (*RegisterOutput, error) {
-	// メールアドレスの重複チェック（ビジネスルールバリデーション）
 	existingUser, err := uc.userRepo.FindByEmail(ctx, input.Email)
 	if err != nil {
 		return nil, err
@@ -49,10 +45,8 @@ func (uc *RegisterUseCase) Execute(ctx context.Context, input RegisterInput) (*R
 		return nil, err
 	}
 
-	// ユーザードメインモデルを作成
 	newUser := user.NewUser(input.Nickname, input.Email, string(hashedPassword))
 
-	// ユーザーを永続化
 	createdUser, err := uc.userRepo.Create(ctx, newUser)
 	if err != nil {
 		return nil, err

@@ -16,6 +16,7 @@ export const postLogin = async (body: LoginRequestBody): Promise<LoginResponse> 
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Cookieを送受信するために必要
       body: JSON.stringify({
         email: body.email,
         password: body.password
