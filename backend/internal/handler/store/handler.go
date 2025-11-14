@@ -25,7 +25,7 @@ func (h *Handler) GetList(c *gin.Context) {
 		return
 	}
 
-	res := make([]Response, len(output.Stores))
+	res := make([]response, len(output.Stores))
 	for i, s := range output.Stores {
 		res[i] = newResponse(s)
 	}

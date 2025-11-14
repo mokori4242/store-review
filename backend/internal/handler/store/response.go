@@ -2,7 +2,7 @@ package store
 
 import "store-review/internal/domain/store"
 
-type Response struct {
+type response struct {
 	ID              int64    `json:"id"`
 	Name            string   `json:"name"`
 	RegularHolidays []string `json:"regularHolidays"`
@@ -11,8 +11,8 @@ type Response struct {
 	WebProfiles     []string `json:"webProfiles"`
 }
 
-func newResponse(s *store.Store) Response {
-	return Response{
+func newResponse(s *store.Store) response {
+	return response{
 		ID:              s.ID,
 		Name:            s.Name,
 		RegularHolidays: parseHolidays(s.RegularHolidays),

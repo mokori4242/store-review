@@ -24,7 +24,7 @@ func NewHandler(logger *slog.Logger, registerUseCase *auth.RegisterUseCase) *Han
 func (h *Handler) RegisterUser(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var req Request
+	var req request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.ErrorContext(ctx, "Failed to bind JSON", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -49,7 +49,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	res := Response{
+	res := response{
 		ID:        output.User.ID,
 		Nickname:  output.User.Nickname,
 		Email:     output.User.Email,
