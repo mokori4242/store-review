@@ -3,7 +3,6 @@ package test
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -29,14 +28,15 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
-var testDB *sql.DB
-var testQueries *db.Queries
+var testDB *pgxpool.Pool
+var testQueries *sqlc.Queries
 var update = flag.Bool("update", false, "update golden files")
 
 func TPostgres(t *testing.T) {
@@ -67,20 +67,20 @@ func TPostgres(t *testing.T) {
 		t.Fatalf("Failed to migrate database: %v", err)
 	}
 
-	testDB, err = sql.Open("postgres", connStr)
+	testDB, err = pgxpool.New(ctx, connStr)
 	if err != nil {
 		t.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// テスト時のみusersの作成・更新日の時間を固定
 	// 増えてきたら関数に切り出すのが良さそう
-	_, err = testDB.Exec("ALTER TABLE users ALTER COLUMN created_at SET DEFAULT '2025-11-11 12:00:00'::timestamp, ALTER COLUMN updated_at SET DEFAULT '2025-11-11 12:00:00'::timestamp;")
+	_, err = testDB.Exec(ctx, "ALTER TABLE users ALTER COLUMN created_at SET DEFAULT '2025-11-11 12:00:00+00'::timestamptz, ALTER COLUMN updated_at SET DEFAULT '2025-11-11 12:00:00'::timestamp;")
 	if err != nil {
 		t.Fatalf("Failed to lock time: %v", err)
 	}
 
 	// クエリオブジェクトを作成
-	testQueries = db.New(testDB)
+	testQueries = sqlc.New(testDB)
 }
 
 func Seeding(t *testing.T, seedFile string) error {
@@ -90,7 +90,7 @@ func Seeding(t *testing.T, seedFile string) error {
 	if err != nil {
 		return fmt.Errorf("failed to get seed file: %s", err)
 	}
-	_, err = testDB.Exec(string(data))
+	_, err = testDB.Exec(context.Background(), string(data))
 	if err != nil {
 		return fmt.Errorf("failed to seeding: %s", err)
 	}

@@ -3,11 +3,12 @@
 //   sqlc v1.30.0
 // source: users.sql
 
-package db
+package sqlc
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -25,12 +26,12 @@ type CreateUserRow struct {
 	ID        int64
 	Nickname  string
 	Email     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Nickname, arg.Email, arg.Password)
+	row := q.db.QueryRow(ctx, createUser, arg.Nickname, arg.Email, arg.Password)
 	var i CreateUserRow
 	err := row.Scan(
 		&i.ID,
@@ -47,7 +48,7 @@ DELETE FROM users WHERE id = $1
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -61,12 +62,12 @@ type GetUserRow struct {
 	ID        int64
 	Nickname  string
 	Email     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 func (q *Queries) GetUser(ctx context.Context, id int64) (GetUserRow, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
+	row := q.db.QueryRow(ctx, getUser, id)
 	var i GetUserRow
 	err := row.Scan(
 		&i.ID,
@@ -85,7 +86,7 @@ WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -108,8 +109,8 @@ RETURNING id, nickname, email, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	Nickname sql.NullString
-	Email    sql.NullString
+	Nickname pgtype.Text
+	Email    pgtype.Text
 	ID       int64
 }
 
@@ -117,12 +118,12 @@ type UpdateUserRow struct {
 	ID        int64
 	Nickname  string
 	Email     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.Nickname, arg.Email, arg.ID)
+	row := q.db.QueryRow(ctx, updateUser, arg.Nickname, arg.Email, arg.ID)
 	var i UpdateUserRow
 	err := row.Scan(
 		&i.ID,

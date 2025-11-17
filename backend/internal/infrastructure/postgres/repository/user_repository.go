@@ -2,18 +2,20 @@ package repository
 
 import (
 	"context"
-	"database/sql"
+	"errors"
 	"store-review/internal/domain/user"
-	db "store-review/internal/infrastructure/gen"
+	"store-review/internal/infrastructure/gen"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // UserRepository ユーザーリポジトリの実装
 type UserRepository struct {
-	queries *db.Queries
+	queries *sqlc.Queries
 }
 
 // NewUserRepository ユーザーリポジトリを作成
-func NewUserRepository(queries *db.Queries) user.Repository {
+func NewUserRepository(queries *sqlc.Queries) user.Repository {
 	return &UserRepository{
 		queries: queries,
 	}
@@ -21,7 +23,7 @@ func NewUserRepository(queries *db.Queries) user.Repository {
 
 // Create ユーザーを作成
 func (r *UserRepository) Create(ctx context.Context, u *user.User) (*user.User, error) {
-	params := db.CreateUserParams{
+	params := sqlc.CreateUserParams{
 		Nickname: u.Nickname,
 		Email:    u.Email,
 		Password: u.Password,
@@ -45,7 +47,7 @@ func (r *UserRepository) Create(ctx context.Context, u *user.User) (*user.User, 
 func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*user.User, error) {
 	result, err := r.queries.GetUserByEmail(ctx, email)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
@@ -65,7 +67,7 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*user.U
 func (r *UserRepository) FindByID(ctx context.Context, id int64) (*user.User, error) {
 	result, err := r.queries.GetUser(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err

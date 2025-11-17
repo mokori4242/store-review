@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 	"store-review/internal/domain/store"
-	db "store-review/internal/infrastructure/gen"
+	"store-review/internal/infrastructure/gen"
 )
 
 type StoreRepository struct {
-	queries *db.Queries
+	queries *sqlc.Queries
 }
 
-func NewStoreRepository(queries *db.Queries) store.Repository {
+func NewStoreRepository(queries *sqlc.Queries) store.Repository {
 	return &StoreRepository{
 		queries: queries,
 	}
