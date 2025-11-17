@@ -35,7 +35,7 @@ export const RegisterFormContainer = () => {
     onSuccess: () => {
       setSuccessMessage('登録が完了しました！')
       setGeneralError(undefined)
-      router.push('/')
+      router.push('/login')
     },
     onError: (error: ResponseError) => {
       if (error) {

@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	cfglog "store-review/internal/config/log"
 	"store-review/internal/handler/login"
 	"store-review/internal/handler/middleware"
 	"store-review/internal/handler/register"
@@ -71,6 +72,13 @@ func TPostgres(t *testing.T) {
 		t.Fatalf("Failed to connect to database: %v", err)
 	}
 
+	// テスト時のみusersの作成・更新日の時間を固定
+	// 増えてきたら関数に切り出すのが良さそう
+	_, err = testDB.Exec("ALTER TABLE users ALTER COLUMN created_at SET DEFAULT '2025-11-11 12:00:00'::timestamp, ALTER COLUMN updated_at SET DEFAULT '2025-11-11 12:00:00'::timestamp;")
+	if err != nil {
+		t.Fatalf("Failed to lock time: %v", err)
+	}
+
 	// クエリオブジェクトを作成
 	testQueries = db.New(testDB)
 }
@@ -97,6 +105,8 @@ func SetupRouter(t *testing.T) *gin.Engine {
 
 	tJwtSecret := []byte("test")
 
+	logger := cfglog.NewSlog()
+
 	// リポジトリを作成
 	userR := repository.NewUserRepository(testQueries)
 	storeR := repository.NewStoreRepository(testQueries)
@@ -107,14 +117,18 @@ func SetupRouter(t *testing.T) *gin.Engine {
 	sListUC := suc.NewListUseCase(storeR)
 
 	// ハンドラーを作成
-	registerH := register.NewHandler(registerUC)
-	loginH := login.NewHandler(loginUC)
+	registerH := register.NewHandler(logger, registerUC)
+	loginH := login.NewHandler(logger, loginUC)
 	storeH := store.NewHandler(sListUC)
 
 	r := gin.Default()
+
+	r.Use(middleware.LogContextMiddleware(logger), middleware.CorsMiddleware(), middleware.CSRFMiddleware(logger))
+	jwt := r.Group("", middleware.JwtMiddleware(tJwtSecret))
+
 	r.POST("/register", registerH.RegisterUser)
 	r.POST("/login", loginH.Login)
-	r.GET("/stores", middleware.JwtMiddleware(tJwtSecret), storeH.GetList)
+	jwt.GET("/stores", storeH.GetList)
 
 	return r
 }
@@ -194,7 +208,7 @@ func GetStringFromTestFile(t *testing.T, path string) string {
 	return string(bt)
 }
 
-func GetAccessToken(t *testing.T, r *gin.Engine) string {
+func GetCookie(t *testing.T, r *gin.Engine) *http.Cookie {
 	t.Helper()
 
 	// ログインしてトークンを取得
@@ -208,13 +222,7 @@ func GetAccessToken(t *testing.T, r *gin.Engine) string {
 	loginW := httptest.NewRecorder()
 	r.ServeHTTP(loginW, loginReq)
 
-	var loginResponse login.Response
-	err := json.Unmarshal(loginW.Body.Bytes(), &loginResponse)
-	if err != nil {
-		t.Fatalf("failed json.Unmarshal '%#v'", err)
-	}
-
-	return loginResponse.AccessToken
+	return loginW.Result().Cookies()[0]
 }
 
 func migrateDB(connStr string) error {

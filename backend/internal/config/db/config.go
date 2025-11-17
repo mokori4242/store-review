@@ -3,13 +3,13 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"log/slog"
 	"store-review/internal/config"
 
 	_ "github.com/lib/pq"
 )
 
-func ConnectDB(cfgd *config.DBConfig) *sql.DB {
+func ConnectDB(cfgd *config.DBConfig, logger *slog.Logger) *sql.DB {
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfgd.User, cfgd.Password, cfgd.Host, cfgd.Port, cfgd.DBName, cfgd.SSLMode,
@@ -17,13 +17,14 @@ func ConnectDB(cfgd *config.DBConfig) *sql.DB {
 
 	conn, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("❌ Failed to open DB: %v", err)
+		logger.Error("Failed to open DB", "error", err)
 	}
 
-	if err := conn.Ping(); err != nil {
-		log.Fatalf("❌ Failed to connect DB: %v", err)
+	err = conn.Ping()
+	if err != nil {
+		logger.Error("Failed to connect DB", "error", err)
 	}
 
-	log.Println("✅ Connected to PostgreSQL")
+	logger.Info("Connected to PostgreSQL")
 	return conn
 }

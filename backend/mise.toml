@@ -1,0 +1,3 @@
+[tasks.test]
+description = "go test"
+run = "go test -v ./test/feature/..."

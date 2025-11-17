@@ -1,6 +1,6 @@
 package register
 
-type Response struct {
+type response struct {
 	ID        int64  `json:"id"`
 	Nickname  string `json:"nickname"`
 	Email     string `json:"email"`
